@@ -1,0 +1,430 @@
+#+Title: Ideas de constructivismo y computabilidad
+#+Author: Mario Román
+#+beamer_header: \institute{LibreIM - IEMath Granada}
+
+* Header                                                                                    :ignore:
+#+Options: H:2 toc:t tasks:nil num:t
+#+Language: es
+
+*** Beamer                                                                                :ignore:
+#+latex_class: beamer
+#+latex_class_options: [usenames,dvipsnames,8pt,mathserif,spanish]
+#+latex_cmd: xelatex
+#+latex_header: \usepackage[spanish]{babel}
+#+beamer_theme: metropolis [background=light,sectionpage=none,numbering=none,progressbar=none,block=fill]
+#+beamer_header: \usepackage{textpos}
+
+*** Show notes on second screen                                                           :ignore:
+#+beamer_header: \usepackage{pgfpages}
+#+beamer_header: \setbeameroption{hide notes}
+#+beamer_header: %\setbeameroption{show notes on second screen=right}
+#+beamer_header: \setbeamertemplate{note page}{\pagecolor{yellow!5}\insertnote}
+
+**** Bug in pgfpages                                                                     :ignore:
+# Hackish way to correct a bug in pgfpages https://tex.stackexchange.com/a/306662/64938
+#+beamer_header: \makeatletter 
+#+beamer_header: \renewcommand{\@makefnmark}{}
+#+beamer_header: \def\beamer@framenotesbegin{% at beginning of slide
+#+beamer_header:      \usebeamercolor[fg]{normal text}
+#+beamer_header:       \gdef\beamer@noteitems{}% 
+#+beamer_header:       \gdef\beamer@notes{}% 
+#+beamer_header: }
+#+beamer_header: \makeatother
+
+#+beamer_header: \usepackage[backend=bibtex,natbib=true]{biblatex}
+#+beamer_header: \addbibresource{Bibliography.bib}
+
+#+latex_header: \usepackage{tikz}
+#+latex_header: \usepackage{tikz-cd}
+#+latex_header: \usetikzlibrary{shapes,fit,tikzmark}
+
+#+beamer_header: \usepackage{amsthm}
+#+beamer_header: \usepackage{amsmath}
+
+*** Table of contents                                                                     :ignore:
+#+beamer_header: \setcounter{tocdepth}{1}
+#+beamer_header: \setbeamertemplate{section in toc}[sections numbered]
+
+*** Fonts                                                                                 :ignore:
+#+beamer_header: \usefonttheme{professionalfonts}
+#+beamer_header: \usepackage{palatino}
+#+beamer_header: \setmonofont{Fira Mono}
+
+*** Beamer colors                                                                         :ignore:
+#+beamer_header: \definecolor{accent}{HTML}{c6474b}
+#+beamer_header: \colorlet{darkaccent}{accent!70!black}
+#+beamer_header: \definecolor{foreground}{RGB}{0, 0, 0}
+#+beamer_header: \definecolor{background}{RGB}{255, 255, 255}
+
+#+beamer_header: \setbeamercolor{normal text}{fg=foreground, bg=background}
+#+beamer_header: \setbeamercolor{alerted text}{fg=darkaccent, bg=background}
+#+beamer_header: \setbeamercolor{example text}{fg=foreground, bg=background}
+#+beamer_header: \setbeamercolor{frametitle}{fg=background, bg=accent}
+#+beamer_header: \setbeamercolor{headtitle}{fg=background!70!accent,bg=accent!90!foreground}
+#+beamer_header: \setbeamercolor{headnav}{fg=background,bg=accent!90!foreground}
+#+beamer_header: \setbeamercolor{section in head/foot}{fg=background,bg=accent}
+*** Colors                                                                                :ignore:
+#+latex_header: \definecolor{ugrColor}{HTML}{c6474b} % Title
+#+latex_header: \definecolor{ugrColor2}{HTML}{c6474b} % Sections
+#+latex_header: \definecolor{redPRL}{HTML}{ad2231}
+#+latex_header: \definecolor{bluePRL}{HTML}{1790bf}
+#+latex_header: \definecolor{greenPRL}{HTML}{078f60}
+
+#+latex_header: \newcommand{\white}[1]{{\textcolor{white}{#1}}}
+
+#+latex_header: \colorlet{myred}{redPRL}
+#+latex_header: \colorlet{myblue}{bluePRL}
+#+latex_header: \newcommand{\red}[1]{{\color{myred}{{#1}}}}
+#+latex_header: \newcommand{\blue}[1]{{\color{myblue}{{#1}}}}
+#+latex_header: \newcommand{\ctypes}[1]{\color{bluePRL}{#1}}
+#+latex_header: \newcommand{\cterms}[1]{\color{redPRL}{\texttt{#1}}}
+*** Proof trees                                                                           :ignore:
+#+latex_header: \usepackage{bussproofs}
+#+latex_header: \EnableBpAbbreviations{}
+*** Minted                                                                                :ignore:
+#+latex_header_extra: \usepackage{minted} \usemintedstyle{colorful}
+#+latex_header_extra: \setminted{fontsize=\small}
+#+latex_header_extra: \setminted[haskell]{linenos=false,fontsize=\footnotesize}
+#+latex_header_extra: \renewcommand{\theFancyVerbLine}{\sffamily\textcolor[rgb]{0.5,0.5,1.0}{\oldstylenums{\arabic{FancyVerbLine}}}}
+*** Multimedia                                                                            :ignore:
+#+beamer_header: \usepackage{multimedia}
+*** Macros                                                                                :ignore:
+#+latex_header: \usepackage{amssymb} \usepackage{mathtools} \usepackage{amsmath}
+#+latex_header: \usepackage{bbm} \usepackage{stmaryrd}
+#+latex_header: \DeclarePairedDelimiter\pair{\langle}{\rangle} % Pair notation
+#+latex_header: \DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+#+latex_header: \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+#+latex_header: \DeclarePairedDelimiter\intr{\llbracket}{\rrbracket} % Interpretation brackets
+*** Plan                                                                                  :ignore:
+#+beamer_header: \AtBeginSection[]{
+#+beamer_header:  \begin{frame}<beamer>
+#+beamer_header:  \frametitle{Esquema}
+#+beamer_header:  \tableofcontents[currentsection]
+#+beamer_header:  \end{frame}
+#+beamer_header: }
+*** Definitions                                                                           :ignore:
+#+latex_header: \newcommand{\impl}{\Rightarrow} % Implication
+#+latex_header: \DeclarePairedDelimiter\pair{\langle}{\rangle} % Pair notation
+#+latex_header: \newcommand{\conat}{\mathbb{N}_\infty}
+
+* Constructivismo
+** Constructivismo en filosofía
+
+ * Múltiples tendencias filosóficas.
+ * Algunas con diferencias prácticas en las matemáticas.
+ * Asumimos *constructivismo de Bishop*, que se limita al agnosticismo
+   sobre el tercio excluso.
+
+** Agnosticismo respecto a un axioma
+Supongamos que siempre hubiéramos trabajado con el axioma:
+*todos los grupos son conmutativos*.
+¿Qué ocurriría si un día lo retiráramos?
+
+ * Podemos probar menos teoremas. 
+
+ * Pero tenemos más ejemplos, algunos extraños.
+
+ * Retirarlo no es negarlo. 
+
+** Definiciones
+
+ * $\bot$ es una proposición falsa, implica cualquier cosa $\forall A \colon \bot \impl A$.
+
+ * $\neg A$ se define como $A \impl \bot$.
+
+ * El *tercio excluso* es el axioma $\forall A\colon A \vee \neg A$.
+
+** La doble negación equivale al tercio excluso
+Si queremos ser agnósticos con el tercio excluso tenemos que serlo
+con la *regla de la doble negación* $A = \neg\neg A$, porque son equivalentes.
+
+ * $A \impl \neg \neg A$ es fácil.
+ * $\neg \neg A \impl A$ es fácil si tenemos el tercio excluso.
+ * Además $\neg\neg(A \vee \neg A)$ siempre, así que si tenemos la doble negación, tenemos
+   el tercio excluso
+
+** No podemos hacer demostraciones por reducción al absurdo
+
+Hay dos cosas distintas que llamamos demostración por *reducción al absurdo*.
+
+ 1. /Supongamos $\neg P$, ..., llegamos a contradicción $\bot$, luego $P$;/
+ 2. /Supongamos $P$, ..., llegamos a contradicción $\bot$, luego $\neg P$./
+
+La primera equivale al tercio excluso. La segunda es la
+definición de negación. Sólo son iguales si asumes el
+tercio excluso.  Muchas demostraciones por 'contradicción' no lo son.
+
+ * La raíz de 2 es irracional.
+ * Teorema de Cantor.
+ * Teorema de Russell.
+
+   
+* Interpretación BHK
+** Una intuición
+Diremos que $p \Vdash \varphi$ si $p$ es un programa que *realiza* a $\varphi$.
+
+ * $\pair{p,q}\Vdash \phi \wedge \psi$, cuando $p \Vdash \phi$ y $q \Vdash \psi$;
+ * $\pair{p,q} \Vdash \phi \vee \psi$, cuando $p$ representa un bit que nos dice si vamos a
+   demostrar $\phi$ o si vamos a demostrar $\psi$ y $q$ realiza al elegido;
+ * $p \Vdash \phi \impl \psi$, cuando $p$ es un programa que toma como entrada un
+   $s \Vdash \phi$ y devuelve un $p(s) \Vdash \psi$;
+ * $p \Vdash \forall x \in A, \phi(x)$, cuando $p$ es un programa que toma como entrada
+   $s \Vdash a \in A$ y devuelve $p(s)\Vdash \phi(a)$;
+ * $\pair{p,q} \Vdash \exists x \in A, \phi(x)$, cuando $p \Vdash a \in A$ y $q \Vdash \phi(a)$;
+ * $p \Vdash \bot$ en ningún caso;
+ * $p \Vdash \top$ en todos los casos.
+
+Las proposiciones válidas en lógica intuicionista deberían ser
+realizables.
+
+** Interpretando
+
+ * No existe un programa $p \Vdash \forall \varphi\colon \varphi \vee \neg \varphi$.
+   Resolvería el problema de la parada. \pause
+
+ * No existe un programa $p \Vdash \forall x \in \mathbb{R} \colon (x = 0) \vee (x \neq 0)$.
+   Necesitaría inspeccionar infinitos bits. \pause
+
+ * Existe un programa
+   \[
+   p \Vdash \Big(\phi(0) \wedge (\forall k \in \mathbb{N} \colon \phi(k) \impl \phi(k+1))\Big) \impl
+   \forall n \in \mathbb{N} \colon \phi(n).
+   \]
+
+#+BEGIN_SRC python :results output
+def recursion (zero, succ, n):
+  if n == 0: return zero
+  return succ(recursion(zero,succ,n-1))
+#+END_SRC
+
+#+BEGIN_SRC haskell
+recursion :: a -> (a -> a) -> Integer -> a
+recursion z s 0 = z
+recursion z s n = s (recursion z s (n-1))
+#+END_SRC
+
+* Matemática constructivista
+** Perdemos el axioma de elección
+
+ * *Teorema de Diaconescu*. El axioma de elección implica el tercio excluso.
+ * La demostración usa sólo conjuntos finitos y aprovecha que
+   $\forall n \in \mathbb{N}\colon (n = 0) \vee (n \neq 0)$.
+
+** Empiezan a pasar cosas extrañas
+ * No podemos probar que *cada espacio vectorial tiene una base*.
+ * El *teorema de Bolzano* tampoco puede probarse. Podremos de todas
+   formas probar versiones que intentan construir el cero
+   aproximándolo, pero necesitamos hipótesis adicionales.
+ * El *teorema de Tychonoff* o el *lema de Zorn* son equivalentes al
+   axioma de elección, no podemos esperar probarlos en este contexto.
+ * Existe una función $f \colon [0,1] \to \mathbb{R}$ *no acotada*.
+ * Es un problema abierto determinar si existe una inyección $\mathbb{R} \to \mathbb{N}$.
+ * '*Toda función es continua*' es un axioma válido.
+ * '*Toda función es computable*' es un axioma válido.
+
+** Muy extrañas, de hecho
+
+Dada una proposición no decidible $P$, el conjunto $A = \{0 \mid P\mbox{ es cierto}\}$
+no puede probarse finito, pero puede probarse que no es infinito.
+El conjunto $A$ es $\neg\neg\text{-finito}$.
+
+* Geometría diferencial sintética
+** Oficialidad y realidad
+Oficialmente todos calculamos límites y derivadas usando la
+caracterización \varepsilon-\delta de Cauchy. En realidad
+se acaban haciendo cosas como las siguientes.
+
+\[
+(x^2)' = \frac{(x+dx)^2 - x^2}{dx} = 2x + dx \overset{\mathrm{?!}}{=} 2x.
+\]
+
+ * *¿Pero por qué puedes derivar?* Asumo lo que haga falta.
+ * *¿Pero por qué quitas el $dx$?* Es muy pequeño, es despreciable.
+ * *¿Pero entonces por qué no quitarlo directamente?*   
+\[
+(x^2)' = \frac{(x+dx)^2 - x^2}{dx} \overset{\mathrm{?!}}{=} \frac{x^2 - x^2}{dx} = 0.
+\]
+
+Vamos a formalizar esto.
+
+** Microafinidad
+
+ * *Infinitesimales* $D = \{d \in R \mid d^2 = 0\}$.
+ * *Axioma*. Toda función $g \colon D \to R$ es lineal de forma única. 
+ * En particular cada $f \colon R \to R$ tiene una única '/derivada/'
+   en cada punto $x \in R$.
+   \[g(d) = f(x + d) = f(x) + f'(x) d\]
+ * *¿Pero no es verdad que $D = \left\{ 0 \right\}$?* No, si debilitamos la lógica
+
+** Cancelación
+
+ * $R$ es un cuerpo, luego $(x \neq 0) \impl x \mbox{ tiene inversa}$.
+ * Pero los infintesimales no cumplen la condición. No podemos dividir
+   por un infinitesimal.
+
+*Teorema de cancelación.* Si tenemos $ad = bd$ para todo $d \in D$, entonces $a = b$.
+
+Podemos dividir por un infinitesimal sólo si está cuantificado universalmente.
+
+* Omnisciencia
+** ¿Qué buscamos?
+Un conjunto $X$ es *omnisciente* si para cualquier proposición booleana
+$p \colon X \to 2$, podemos o encontrar un $x \in X$ tal que $p(x) = \mathsf{true}$ o
+podemos encontrar una demostración de para cualquier $x \in X$ se tiene
+que $p(x) = \mathsf{false}$.
+
+¿Son los naturales omniscientes? *¡No!*, contravendría Turing.
+Pero hay conjuntos parecidos a ellos que sí lo son.
+
+#+BEGIN_SRC haskell
+forsome (\n -> 2 * n ^ 3 == 245 + n)      -- true
+forsome (\n -> n * n == 28)               -- false
+epsilon (\n -> n * n + 4 * n == 32)       -- 4
+#+END_SRC
+
+Construimos *funciones de búsqueda* $\varepsilon \colon (X \to 2)\to X$ tales que
+$p(\varepsilon(p)) = 1$ nos da un ejemplo y $p(\varepsilon(p)) = 0$ implica que no
+hay ninguno.
+
+** Espacio de Cantor
+El *espacio de Cantor* es $2^{\mathbb{N}}$. 
+
+ * Es el espacio de todas las funciones (de Haskell) de los
+   naturales a los booleanos.
+ * Es no numerable, no hay biyección (en Haskell) con los naturales.
+
+#+BEGIN_SRC haskell
+-- Empezamos definiendo el espacio de Cantor. Incluimos una función
+-- auxiliar que añade un elemento al inicio de la secuencia.
+type Cantor = Integer -> Bool
+
+(#) :: Bool -> Cantor -> Cantor
+(b # f) 0 = b
+(b # f) n = f (n-1)
+#+END_SRC
+
+** Búsqueda en el espacio de Cantor
+La magia.
+
+#+BEGIN_SRC haskell
+-- Esta definición de epsilon es debida a Ulrich Berger.
+epsilon :: (Cantor -> Bool) -> Cantor
+epsilon p =
+  if forsome (\a -> p (False # a))
+    then False # epsilon (\a -> p (False # a))
+    else True  # epsilon (\a -> p (True  # a))
+
+forsome :: (Cantor -> Bool) -> Bool
+forsome p = p (epsilon p)
+#+END_SRC
+
+Funciones auxiliares.
+
+#+BEGIN_SRC haskell
+forevery :: (Cantor -> Bool) -> Bool
+forevery p = not (forsome (not . p))
+
+-- Igualdad para funciones.
+instance (Eq b) => Eq (Cantor -> b) where
+  f == g = forevery (\u -> f u == g u)
+#+END_SRC
+
+Y en el código que acompaña estas diapositivas hay versiones más
+eficientes usando mónadas.
+
+** Usando búsquedas
+#+BEGIN_SRC haskell
+n b = if b then 1 else 0 -- Auxiliar Bool -> Integer
+-- Ejemplos:
+forsome (\f -> n(f 1) + n(f 2) + n(f 3) == 4)
+-- False
+w1 = (\f -> f ( n(f 2) * n(f 4) + n(f 3) * n(f 4)))
+w2 = (\g -> g ((n(g 3) + n(g 2)) * n(g 4)))
+w1 == w2
+-- True
+v1 = ( \g -> let ng = n . g in ng(2*ng 0 + 3*ng 2 + 2*ng 1) )
+v2 = ( \g -> let ng = n . g in ng(2*ng 0 + 3*ng 2 + 2*ng 2) )
+v1 == v2
+-- False
+#+END_SRC
+
+** Compacidad
+*Teoría*. La diferencia entre $\mathbb{N}$, que no es omnisciente, y $2^{\mathbb{N}}$ 
+que sí, es la compacidad.
+
+|-------------------------+-------------------|
+| Computación             | Topología         |
+|-------------------------+-------------------|
+| Tipo de datos           | Espacio           |
+| Elemento del tipo       | Punto del espacio |
+| Propiedad semidecidible | Conjunto abierto  |
+| Función computable      | Función continua  |
+| forevery es computable  | Compacto          |
+| forsome es computable   | Disperso          |
+|-------------------------+-------------------|
+
+** Conaturales
+Vamos a compactificar los naturales con la *compactificación de Alexandrov*.
+Les añadimos un punto $\infty \in \conat$. El espacio $\conat$ se llama de números *conaturales*.
+
+ * $\left\{ \infty \right\}$ es cerrado, $\mathbb{N}$ es abierto.
+ * Es la secuencia convergente genérica, las secuencias convergentes
+   de $X$ son las funciones continuas $\conat \to X$.
+ * Es semidecidible ver si un conatural es finito, pero no es decidible.
+
+Desde fuera parecen biyectivos, no lo son. Las funciones que nos
+interesan son las computables/continuas. *Lección:* un conjunto en
+matemática constructivista es más que su cardinalidad, tiene una
+estructura topológica/computable.
+
+** Conaturales en Haskell
+Haskell construye los conaturales casi sin querer. Evaluación
+perezosa.
+
+#+BEGIN_SRC haskell
+-- Una representación de los números conaturales.
+data Conat = Zero | Succ Conat deriving (Eq, Show)
+
+infinity :: Conat
+infinity = Succ infinity
+
+-- Hacerlos instancia de Num nos permitirá usar los enteros con
+-- notación usual.
+instance Num Conat where
+  Zero + y = y
+  Succ x + y = Succ (x + y)
+  Zero * y = Zero
+  Succ x * y = y + (x * y)
+  fromInteger 0 = Zero
+  fromInteger n = Succ (fromInteger (n-1))
+#+END_SRC
+
+** Búsquedas en los conaturales
+Función de búsqueda.
+#+BEGIN_SRC haskell
+epsilon :: (Conat -> Bool) -> Conat
+epsilon p = if p Zero
+  then Zero
+  else Succ $ epsilon (p . Succ)
+#+END_SRC
+
+Ejemplos de búsqueda.
+#+BEGIN_SRC haskell
+forsome (\n -> 2 * n ^ 3 == 245 + n)      -- true
+forsome (\n -> n * n == 28)               -- false
+epsilon (\n -> n * n + 4 * n == 32)       -- 4
+#+END_SRC
+
+
+* Agda
+
+** Código en Agda
+Hay una introducción a Agda asociada a esta charla para probar a usar
+un lenguaje dependiente que extraiga programas de demostraciones.
+
+* Local variables                                                                           :ignore:
+# Local Variables:
+# org-latex-pdf-process: ("xelatex --shell-escape -interaction nonstopmode %f" "bibtex %b" "xelatex --shell-escape -interaction nonstopmode %f")
+# org-latex-packages-alist: nil
+# org-latex-default-packages-alist: (("T1" "fontenc" t) ("" "fixltx2e" nil) ("" "graphicx" t) ("" "grffile" t) ("" "longtable" nil) ("" "wrapfig" nil) ("" "rotating" nil) ("normalem" "ulem" t) ("" "amsmath" t) ("" "textcomp" t) ("" "amssymb" t) ("" "capt-of" nil))
+# End:

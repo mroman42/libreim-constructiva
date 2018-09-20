@@ -306,7 +306,7 @@ sí es decidible, podemos dividir en casos.
    a contradicción. Habríamos probado $\neg P$. \qedhere
 #+end_proof
 
-** Las matemáticas constructivistas
+** Las matemáticas constructivas
 El no asumir el tercio excluso nos da libertad axiomática. Podemos
 tomar como axiomas proposiciones que contravendrían el tercio excluso
 en condiciones normales pero que aquí nos permiten desarrollar
@@ -765,7 +765,7 @@ que la única instancia de la igualdad es la reflexividad trabajaremos
 sólo con tipos que representen espacios conexos.
 
 ** Teoremas en Agda
-Como ejemplo, probamos la commutatividad de la suma de números
+Como ejemplo, probamos la conmutatividad de la suma de números
 naturales.
 
 #+latex: \noindent\rule[0.5ex]{\linewidth}{0.1pt}\small
