@@ -1,0 +1,778 @@
+#+Title: Ideas de constructivismo y computabilidad
+#+Author: Mario Román
+#+options: toc:nil
+#+language: es
+
+* Header                                                                                    :ignore:
+** Setup                                                                                   :ignore:
+#+latex_header_extra: %\setcounter{secnumdepth}{0}
+#+latex_header_extra: \usepackage{enumitem}
+#+latex_header_extra: \setitemize{noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt}
+#+latex_header_extra: %\setlist[enumerate]{topsep=0pt,itemsep=-1ex,partopsep=1ex,parsep=1ex}
+#+latex_header_extra: % \usepackage[top=1in, bottom=1.5in, left=1in, right=1.1in]{geometry}
+#+latex_header_extra: \setlength\itemsep{0em}
+#+latex_header_extra: % \setlength{\parindent}{0pt}
+#+latex_header_extra: \usepackage{parskip}
+
+** Babel                                                                                   :ignore:
+#+latex_header_extra: \usepackage[spanish]{babel}
+** Minted                                                                                  :ignore:
+#+latex_header_extra: \usepackage{minted} \usemintedstyle{colorful}
+#+latex_header_extra: \setminted{fontsize=\small}
+#+latex_header_extra: \setminted[haskell]{linenos=false,fontsize=\small}
+#+latex_header_extra: \renewcommand{\theFancyVerbLine}{\sffamily\textcolor[rgb]{0.5,0.5,1.0}{\oldstylenums{\arabic{FancyVerbLine}}}}
+
+** Agda                                                                                    :ignore:
+#+latex_header_extra: \usepackage[conor]{agda}
+#+latex_header_extra: \usepackage{catchfilebetweentags}
+
+#+latex_header: %\usepackage{amssymb}
+#+latex_header: \usepackage{bbm}
+#+latex_header: \usepackage[greek,english]{babel}
+#+latex_header: \DeclareUnicodeCharacter{22A5}{\ensuremath{\scaleobj{0.8}{\boldsymbol{\bot}}}}
+#+latex_header: \DeclareUnicodeCharacter{22A4}{\ensuremath{\scaleobj{0.8}{\boldsymbol{\top}}}}
+#+latex_header: \DeclareUnicodeCharacter{2192}{\ensuremath{\scaleobj{0.7}{\boldsymbol{\to}}}}
+#+latex_header: \DeclareUnicodeCharacter{2200}{\ensuremath{\scaleobj{0.9}{\boldsymbol{\forall}}}}
+#+latex_header: \DeclareUnicodeCharacter{2203}{\ensuremath{\scaleobj{0.85}{\boldsymbol{\exists}}}}
+#+latex_header: \DeclareUnicodeCharacter{21D2}{\ensuremath{\scaleobj{0.7}{\boldsymbol{\Rightarrow}}}}
+#+latex_header: \DeclareUnicodeCharacter{2115}{\ensuremath{\scaleobj{0.8}{\boldsymbol{\mathbb{N}}}}}
+#+latex_header: \DeclareUnicodeCharacter{211D}{\ensuremath{\scaleobj{0.8}{\boldsymbol{\mathbb{R}}}}}
+#+latex_header: \DeclareUnicodeCharacter{2124}{\ensuremath{\scaleobj{0.8}{\boldsymbol{\mathbb{Z}}}}}
+#+latex_header: \DeclareUnicodeCharacter{2217}{\ensuremath{\scaleobj{0.8}{\boldsymbol{\ast}}}}
+#+latex_header: \DeclareUnicodeCharacter{2218}{\ensuremath{\scaleobj{0.9}{\boldsymbol{\circ}}}}
+#+latex_header: \DeclareUnicodeCharacter{2243}{\ensuremath{\scaleobj{0.8}{\boldsymbol{\simeq}}}}
+#+latex_header: \DeclareUnicodeCharacter{2208}{\ensuremath{\scaleobj{0.8}{\boldsymbol{\in}}}}
+#+latex_header: \DeclareUnicodeCharacter{207A}{\ensuremath{\scaleobj{0.8}{\boldsymbol{^{+}}}}}
+#+latex_header: \DeclareUnicodeCharacter{03B1}{\ensuremath{\scaleobj{0.9}{\boldsymbol{\alpha}}}}
+#+latex_header: \DeclareUnicodeCharacter{03B2}{\ensuremath{\scaleobj{0.9}{\boldsymbol{\beta}}}}
+#+latex_header: \DeclareUnicodeCharacter{03B3}{\ensuremath{\scaleobj{0.9}{\boldsymbol{\gamma}}}}
+#+latex_header: \DeclareUnicodeCharacter{03B4}{\ensuremath{\scaleobj{0.9}{\boldsymbol{\delta}}}}
+#+latex_header: \DeclareUnicodeCharacter{03A3}{\ensuremath{\scaleobj{0.9}{\boldsymbol{\Sigma}}}}
+#+latex_header: \DeclareUnicodeCharacter{03A9}{\ensuremath{\scaleobj{0.8}{\boldsymbol{\Omega}}}}
+#+latex_header: \DeclareUnicodeCharacter{2209}{\ensuremath{\scaleobj{0.8}{\boldsymbol{\notin}}}}
+#+latex_header: \DeclareUnicodeCharacter{2261}{\ensuremath{\scaleobj{0.8}{\boldsymbol{\equiv}}}}
+#+latex_header: \DeclareUnicodeCharacter{2262}{\ensuremath{\scaleobj{0.8}{\boldsymbol{\not\equiv}}}}
+#+latex_header: \DeclareUnicodeCharacter{2228}{\ensuremath{\scaleobj{0.8}{\boldsymbol{\vee}}}}
+#+latex_header: \DeclareUnicodeCharacter{2227}{\ensuremath{\scaleobj{0.8}{\boldsymbol{\wedge}}}}
+#+latex_header: \DeclareUnicodeCharacter{2225}{\ensuremath{\scaleobj{0.8}{\boldsymbol{\|}}}}
+#+latex_header: \DeclareUnicodeCharacter{03D5}{\ensuremath{\scaleobj{0.8}{\boldsymbol{\phi}}}}
+
+** Fonts                                                                                   :ignore:
+#+latex_header_extra: %\usepackage{libertineRoman}
+#+latex_header_extra: \usepackage{libertine}
+#+latex_header_extra: \usepackage{inconsolata}
+#+latex_header_extra: %\usepackage{libertinust1math}
+
+** Libraries                                                                               :ignore:
+#+latex_header: \usepackage{amsthm}
+#+latex_header: \usepackage{amsmath}
+#+latex_header: \usepackage{tikz}
+#+latex_header: \usepackage{tikz-cd}
+#+latex_header: \usetikzlibrary{shapes,fit,tikzmark}
+#+latex_header: \usepackage{bussproofs}
+#+latex_header: \EnableBpAbbreviations{}
+#+latex_header: \usepackage{mathtools}
+#+latex_header: \usepackage{scalerel}
+#+latex_header: \usepackage{stmaryrd}
+
+** Theorem styles                                                                          :ignore:
+#+latex_header_extra: \usepackage{url}
+
+#+latex_header_extra: \theoremstyle{plain}
+#+latex_header_extra: \newtheorem{theorem}{Teorema}[subsection]
+#+latex_header_extra: \newtheorem{proposition}[theorem]{Proposición}
+#+latex_header_extra: \newtheorem{lemma}[theorem]{Lema}
+#+latex_header_extra: \newtheorem{corollary}[theorem]{Corolario}
+#+latex_header_extra: \theoremstyle{definition}
+#+latex_header_extra: \newtheorem{definition}[theorem]{Definición}
+#+latex_header_extra: \newtheorem{axiom}[theorem]{Axioma}
+#+latex_header_extra: \newtheorem{proofs}{Demostración}
+#+latex_header_extra: \theoremstyle{remark}
+#+latex_header_extra: \newtheorem{remark}[theorem]{Remark}
+#+latex_header_extra: \newtheorem{exampleth}[theorem]{Example}
+#+latex_header_extra: \begingroup\makeatletter\@for\theoremstyle:=definition,remark,plain\do{\expandafter\g@addto@macro\csname th@\theoremstyle\endcsname{\addtolength\thm@preskip\parskip}}\endgroup
+
+** Macros                                                                                  :ignore:
+#+latex_header: \newcommand{\impl}{\Rightarrow} % Implication
+#+latex_header: \DeclarePairedDelimiter\pair{\langle}{\rangle} % Pair notation
+#+latex_header: \newcommand{\conat}{\mathbb{N}_\infty}
+
+* Constructivismo
+El constructivismo en matemáticas tiene una larga y compleja historia
+filosófica (véase cite:stanford-intuitionism o cite:troelstra2014).
+Nuestra perspectiva, sin embargo, será tan puramente práctica y
+matemática como sea posible, sin entrar en ningún debate de este tipo.
+En términos generales, podríamos decir que el constructivismo exige
+/evidencia positiva/ de una proposición, mientras que la lógica clásica
+simplemente pide /falta de evidencia negativa/.
+
+Supongamos que nos preguntan si existe un programa que termine en
+tiempo finito devolviendo $1$ si la hipótesis de Riemann es cierta y
+$0$ en otro caso. Una respuesta posible desde el punto de vista clásico
+es: "Sí, si la hipótesis es cierta, el programa es \textsf{print(1)},
+si no, el programa es \textsf{print(0)}". Pero esto no es lo que
+queremos, esta solución no está /construyendo/ la evidencia que queríamos.
+Si la hipótesis es $R$, esta respuesta inesperada aparece cuando permitirmos analizar
+por casos $(R \vee \neg R)$ sin tener evidencia de ninguna de las dos. cite:shulman2017world
+
+El asumir ciegamente que $(A \vee \neg A)$ en general (o condiciones equivalentes) 
+es la principal fuente
+de /no-constructivismo/ en nuestras matemáticas.  Lo que demostramos
+sin asumir esa disyunción es en general constructible. En cualquier
+caso, si retiramos un axioma, las matemáticas que obtenemos son
+necesariamente menos potentes pero más generales.
+
+** La ley del tercio excluso
+De forma simplificada, la matemática constructiva es la que se hace
+sin asumir el *tercio excluso*, es decir, sin asumir que para cualquier
+proposición $A$ se tiene que $(A \vee \neg A)$.  Esto hace que no podamos escribir
+demostraciones por reducción al absurdo.
+
+#+attr_latex: :options [Absurdo y negación]
+#+begin_definition
+Definimos $\bot$ como la proposición falsa. De una proposición falsa se sigue
+cualquier cosa. Es decir, para cualquier proposición $B$, se tiene $\bot \impl B$.
+Definimos $\neg A$,  la negación de una proposición $A$, como $\neg A := (A \impl \bot)$.
+#+end_definition
+
+Podríamos pensar que al no asumir el llamado /tercio excluso/, estamos abriendo
+la puerta a otros valores de verdad; pero eso no es cierto. Tenemos los dos
+valores de verdad usuales, simplemente no asumimos tener una demostración de
+ninguno de ellos.
+
+#+begin_theorem 
+No existe ninguna proposición $Q$ que no sea verdadera y que no sea
+falsa a la vez.
+#+end_theorem
+#+begin_proof
+Si no fuera verdadera, tendríamos $\neg Q$; pero si además no fuera
+falsa tendríamos $\neg\neg Q = (\neg Q \impl \bot)$, y uniendo ambas,
+llegaríamos a contradicción, $\bot$. Hemos demostrado que $(\neg Q \wedge \neg\neg Q) \impl \bot$.
+#+end_proof
+
+Aquí hay una diferenciación importante cite:bauer2017five. En matemáticas se suele llamar
+/reducción al absurdo/ a dos cosas distintas. Una es una verdadera demostración
+por contradicción y está prohibida en matemática constructiva,
+
+ * /supongamos $\neg P$, ..., llegamos a contradicción $\bot$, luego $P$;/
+
+pero la otra es simplemente la definición de la negación y es perfectamente
+válida constructivamente,
+
+ * /supongamos $P$, ..., llegamos a contradicción $\bot$, luego $\neg P$./
+
+Si parecen iguales es porque tenemos la costumbre de aplicar la regla de
+la doble negación, $\neg\neg A = A$, casi sin pensar; ¡pero la regla de la doble
+negación no es cierta en matemática constructiva! porque equivale a la ley
+del tercio excluso.
+
+#+begin_theorem 
+Se tiene $\neg\neg A = A$ para cualquier proposición $A$ si y sólo si
+se tiene $(A \vee \neg A)$ cualquier proposición $A$. De hecho, en general
+se tiene que $\neg\neg(A \vee \neg A)$.
+#+end_theorem
+#+begin_proof
+Primero nótese que $A \impl \neg\neg A$ trivialmente. Pero además, si sabemos
+que $(A \vee\neg A)$, podemos demostrar $\neg\neg A\impl A$ partiendo
+en dos casos
+
+ * si $A$, entonces hemos terminado;
+ * si $\neg A$, entonces, como $\neg\neg A$, llegamos a $\bot$, pero de aquí se sigue
+   cualquier cosa, en particular, se sigue que $A$.
+
+Para la conversa, simplemente probaremos $\neg\neg(A \vee \neg A)$. Para
+ello asumimos $\neg(A \vee\neg A)$ y llegamos a contradicción. Esto lo
+haremos probando $\neg A$ bajo la asunción $\neg (A \vee \neg A)$, entonces
+tendremos que $A \vee \neg A$, simplemente porque ya tenemos $\neg A$, y
+habremos llegado a contradicción.
+
+Para probar $\neg A$ bajo la asunción $\neg (A \vee \neg A)$, simplemente
+vemos que si se tuviera $A$, se tendría $A \vee\neg A$ y se llegaría
+a contradicción.
+#+end_proof
+
+Muchos de los ejemplos comunes de reducción al absurdo son realmente
+demostraciones de una negación. Y no los perdemos cuando trabajamos
+sin tercio excluso.
+
+#+begin_proposition
+La raíz de $2$ es irracional.
+#+end_proposition
+#+begin_proof
+/Irracional/ significa /no racional/. Supongamos que fuera racional,
+entonces sería de la forma $\sqrt{2} = a/b$, para algunos $a$ y $b$ coprimos.
+Pero entonces $a^2 = 2b^2$, con lo que $4 \mid a$ y $2 \mid b$, llegando a contradicción.
+#+end_proof
+
+** Realizabilidad y la interpretación BHK
+Para ganar intuición sobre cómo funcionan las matemáticas una vez que
+excluímos algunos principios clásicos, recurriremos a la
+interpretación informal de Brower-Heyting-Kolmogorov, que tiene su
+formalización en la teoría de realizabilidad.
+
+Establecemos una relación de realizabilidad $p \Vdash \varphi$. Y la
+leemos diciendo que $p$, que podría ser un programa o una secuencia de
+bits, *realiza* o /representa/ a $\varphi$ (o /presenta evidencia de/), que podría ser una fórmula o un objeto
+matemático. Establecemos ciertas reglas y operaciones entre realizadores
+que gobiernan cómo interpretan la lógica. cite:bauer2013intuitionistic
+
+ * $\pair{p,q}\Vdash \phi \wedge \psi$, cuando $p \Vdash \phi$ y $q \Vdash \psi$;
+ * $\pair{p,q} \Vdash \phi \vee \psi$, cuando $p$ representa un bit que nos dice si vamos a
+   demostrar $\phi$ o si vamos a demostrar $\psi$ y $q$ realiza al elegido;
+ * $p \Vdash \phi \impl \psi$, cuando $p$ es un programa que toma como entrada un
+   $s \Vdash \phi$ y devuelve un $p(s) \Vdash \psi$;
+ * $p \Vdash \forall x \in A, \phi(x)$, cuando $p$ es un programa que toma como entrada
+   $s \Vdash a \in A$ y devuelve $p(s)\Vdash \phi(a)$;
+ * $\pair{p,q} \Vdash \exists x \in A, \phi(x)$, cuando $p \Vdash a \in A$ y $q \Vdash \phi(a)$;
+ * $p \Vdash \bot$ en ningún caso;
+ * $p \Vdash \top$ en todos los casos.
+
+Estos conceptos son claros en los asistentes de demostraciones y en
+las teorías de tipos. Podemos sin embargo imaginarnos cómo serían los
+realizadores de ciertos principios. Como primer ejemplo, sea el 
+principio de conmutatividad de la conjunción $\phi \wedge \psi \impl \psi \wedge \phi$; su
+realización podría ser un programa que toma una tupla $(a,b)$ como
+entrada y devuelve la tupla $(b,a)$, es decir, que /intercambia/.
+
+O, por ejemplo, el principio de inducción de los números naturales
+\[
+\Big(\phi(0) \wedge (\forall k \in \mathbb{N} \colon \phi(k) \impl \phi(k+1))\Big) \impl
+\forall n \in \mathbb{N} \colon \phi(n)
+\]
+es realizado por un programa que implementa recusión primitiva.  En
+Python, por ejemplo, si escogemos los naturales de Python como
+realizadores de los naturales, sería el siguiente.
+
+#+BEGIN_SRC python :results output
+def recursion (zero, succ, n):
+  if n == 0: return zero
+  return succ(recursion(zero,succ,n-1))
+#+END_SRC
+
+En un lenguaje fuertemente tipado, sin embargo, es más fácil llevar
+la cuenta de qué estamos representando en cada función.
+
+#+BEGIN_SRC haskell
+recursion :: a -> (a -> a) -> Integer -> a
+recursion z s 0 = z
+recursion z s n = s (recursion z s (n-1))
+#+END_SRC
+
+Todavía mejor sería si los tipos fueran suficientemente fuertes como
+para asegurarnos que los realizadores que construimos son válidos.
+Agda es un asistente de demostración con tipos dependientes.
+
+#+latex: \noindent\rule[0.5ex]{\linewidth}{0.1pt}\small
+#+latex: \ExecuteMetaData[latex/Snippets.tex]{induction}
+#+latex: \normalsize\noindent\rule[0.5ex]{\linewidth}{0.1pt}
+
+La interpretación nos sirve para justificar informalmente por qué no
+es posible asumir tercio excluso en general. Supongamos que queremos
+demostrar el siguiente enunciado buscando un programa que lo realice.
+\[\forall x \in \mathbb{R} \colon (x = 0) \vee (x \neq 0)\]
+
+Aquí asumiríamos que los reales son la compleción de Cauchy de los
+números racionales. Esto quiere decir que un programa realiza el real
+$r \in \mathbb{R}$ si toma como entrada un natural $k \in \mathbb{N}$ y devuelve en su salida
+un racional $q \in \mathbb{Q}$ tal que $|r - q| < 2^{-k}$. Un programa que realizara el
+enunciado anterior debería ser un programa que tomara como entrada el programa
+que representa a un real y que devolviera en su salida un programa que
+realizara $x = 0$ o un programa que realizara $x \neq 0$. ¡Pero esto no parece
+posible! Necesitaríamos que nuestro programa supiera si $x$ es efectivamente
+$0$ pero la única información que tenemos de él, aunque nos permite aproximarlo
+tanto como queramos, no nos permite comprobar que sea $0$.
+
+Esto tampoco quiere decir que todas las instancias del tercio excluso
+sean falsas, por ejemplo, realizar $\forall n \in \mathbb{N}\colon (n = 0) \vee (n \neq 0)$ es
+sencillo.
+** Axioma de elección. Teorema de Diaconescu
+#+attr_latex: :options [Diaconescu]
+#+begin_theorem 
+El axioma de elección implica el tercio excluso.
+#+end_theorem
+#+begin_proof
+Sea $P$ una proposición arbitraria. Consideramos los conjuntos
+$A = \left\{ x \in \left\{ 0,1 \right\} \mid P \vee (x=0) \right\}$ y $B = \left\{ x \in \left\{ 0,1 \right\} \mid P \vee (x=1) \right\}$,
+que son claramente no vacíos.
+
+Por axioma de elección, existe una función $f \colon \left\{ A,B \right\} \to \left\{ 0,1 \right\}$ tal
+que $f(A) \in A$ y $f(B) \in B$. Como la igualdad entre números naturales
+sí es decidible, podemos dividir en casos.
+
+ * Si $f(A) = 1$, debemos tener $P$.
+ * Si $f(B) = 0$, debemos tener $P$.
+ * Si $f(A) = 0$ y $f(B) = 1$; suponemos que $P$ fuera cierto y entonces
+   tenemos $A = \left\{ 0,1 \right\} = B$, luego $0 = f(A) = f(B) = 1$, llegando
+   a contradicción. Habríamos probado $\neg P$. \qedhere
+#+end_proof
+
+** Las matemáticas constructivistas
+El no asumir el tercio excluso nos da libertad axiomática. Podemos
+tomar como axiomas proposiciones que contravendrían el tercio excluso
+en condiciones normales pero que aquí nos permiten desarrollar
+axiomatizaciones de la matemática perfectamente válidas. Hay modelos
+de la matemática constructiva donde todas las funciones son continuas,
+y modelos en los que todas las funciones son computables.  Todas las
+categorías con cierta estructura (de topos elemental, y podemos asumir
+existencianúmeros naturales o extensionalidad) sirven como modelos
+para este tipo de matemáticas.
+
+Por otra parte, muchas de las intuiciones que teníamos como obvias en la
+matemática clásica empiezan a fallar. El hecho de que el subconjunto de
+un conjunto finito sea finito equivale al tercio excluso.
+
+#+begin_proposition
+Dada una proposición no decidible $P$, el conjunto $A = \{0 \mid P\mbox{ es cierto}\}$
+no puede probarse finito, pero puede probarse que no es infinito.
+El conjunto $A$ es $\neg\neg\text{-finito}$.
+#+end_proposition
+#+begin_proof
+Para demostrar que es finito necesitaríamos una biyección con un
+conjunto de la forma $\{0,...,n-1\}$, pero esa biyección nos serviría
+para decidir $P$.
+
+Por otro lado, supongamos que fuera infinito. Entonces no podría
+ser vacío, luego no podríamos tener $\neg P$; pero tampoco podría ser
+de cardinalidad $1$, luego no podríamos tener $P$. Hemos obtenido
+que $\neg\neg P \wedge \neg P$, contradicción.
+#+end_proof
+
+Y no es lo único que no se comporta como esperamos.
+
+ * No podemos probar que *cada espacio vectorial tiene una base*.
+ * El *teorema de Bolzano* tampoco puede probarse. Podremos de todas
+   formas probar versiones que intentan construir el cero
+   aproximándolo, pero necesitamos hipótesis adicionales.
+ * El *teorema de Tychonoff* o el *lema de Zorn* son equivalentes al
+   axioma de elección, no podemos esperar probarlos en este contexto.
+ * Existe una función $f \colon [0,1] \to \mathbb{R}$ *no acotada*.
+ * Es un problema abierto determinar si existe una inyección $\mathbb{R} \to \mathbb{N}$.
+
+* Geometría diferencial sintética
+Cuando hacemos matemática aplicada, toda función tiene derivada (suele
+decirse ``asumo lo que haga falta para derivar''); y las derivadas suelen
+calcularse usando infinitesimales.
+\[
+(x^2)' = \frac{(x+dx)^2 - x^2}{dx} = 2x + dx \overset{\mathrm{?!}}{=} 2x.
+\]
+Pero si en el último paso decimos simplemente que ``podemos eliminar $dx$
+porque es infinitesimalmente pequeño'', ¿por qué no eliminarlo directamente
+al principio?
+\[
+(x^2)' = \frac{(x+dx)^2 - x^2}{dx} \overset{\mathrm{?!}}{=} \frac{x^2 - x^2}{dx} = 0.
+\]
+Si queremos usar infinitesimales de una manera formal, tendremos que
+dar un planteamiento que evite todos estos problemas.  Existen en
+matemáticas varias formas de trabajar con los infinitesimales evitando
+paradojas; en nuestro caso, usaremos la geometría diferencial
+sintética de Kock-Lawvere cite:kock2006synthetic.
+
+** Microafinidad
+Empezamos definiendo los *infinitesimales* (de grado 2) como los números
+cuyo cuadrado es $0$, es decir, los elementos del conjunto
+$D = \left\{ d \in R \mid d^2 = 0 \right\}$.
+
+#+attr_latex: :options [Axioma de microafinidad de Kock-Lawvere]
+#+begin_axiom
+Toda función $g \colon D \to R$ es lineal de forma única.
+#+end_axiom
+
+Esto es lo que nos proporciona derivadas para cada $f \colon R \to R$. Dado
+un punto $x \in R$, la función $g(d) = f(x + d)$ debe ser lineal, y además
+sabemos que $g(0) = f(x)$, por lo que existe un único número $f'(x)$ al que
+llamamos /derivada de $f$ en el punto $x$/ cumpliendo que
+\[
+f(x + d) = f(x) + f'(x) d.
+\]
+Así, *toda función tiene derivada*, y tomando $\delta$ infinitesimal demostramos
+que también es derivada en el sentido $\varepsilon-\delta$.
+
+Pero claro, estamos obviando un problema importante; dado $d \in D$, no
+es muy difícil deducir que $d^2 = 0$ implica $d=0$ y que por tanto, $D=\left\{ 0 \right\}$.
+Todavía peor, la función $f(x) = x$ tendría como derivadas a $0$ y a $1$ a la
+vez, $f(x + 0) = f(x) + 1\cdot 0 = f(x) + 0\cdot 0$, obteniendo $0 = 1$. La solución
+es debilitar la lógica; esta contradicción no se puede alcanzar si no asumimos
+el tercio excluso.
+
+Para todo lo demás, podemos asumir que $R$ sigue siendo un cuerpo, en
+el sentido de que
+\[
+(x \neq 0) \implies x\mbox{ tiene inversa}.
+\]
+Esto nos prohíbe dividir por infinitesimales particulares, ya que no podemos
+demostrar que sean distintos de $0$. Sin embargo, podremos dividir por infinitesimales
+cuando estén cuantificados universalmente.
+
+#+attr_latex: :options [Ley de cancelación]
+#+begin_theorem 
+Si tenemos $ad = bd$ para todo $d \in D$, entonces $a = b$.
+#+end_theorem
+#+begin_proof
+Tomamos $f(x) = ax - bx$, y tenemos que $f(d) = (a - b)d = 0d$.
+Como la derivada es única, $a - b = 0$.
+#+end_proof
+
+** Ejemplo: derivación con infinitesimales
+Ahora somos capaces de formalizar el ejemplo inicial. Si llamamos
+$f(x) = x^2$ tendremos que para cualquier infinitesimal $d$ se tiene
+la siguiente igualdad.
+\[
+f'(x)d = f(x+d) - f(x) = x^2 + 2xd - x^2 = 2xd.
+\]
+Por lo que, por ley de cancelación, $f'(x) = 2x$.
+
+* Omnisciencia en espacios infinitos
+En esta sección construiremos un espacio que permite una inyección
+desde los números naturales pero con la propiedad de que podemos
+encontrar en tiempo finito ejemplos de cada propiedad o demostraciones
+de que no existe ningún ejemplo. Las propiedades estarán limitadas por
+la estructura de este espacio: nótese que sería imposible tener esta
+misma propiedad para los números naturales. Escribiremos una implementación
+en Haskell.
+#+BEGIN_SRC haskell
+forsome (\n -> 2 * n ^ 3 == 245 + n)      -- true
+forsome (\n -> n * n == 28)               -- false
+epsilon (\n -> n * n + 4 * n == 32)       -- 4
+#+END_SRC
+
+** Omnisciencia
+#+attr_latex: :options [Omnisciencia]
+#+begin_definition
+Un conjunto $X$ es *omnisciente* si para cualquier proposición booleana
+$p \colon X \to 2$, podemos o encontrar un $x \in X$ tal que $p(x) = \mathsf{true}$ o
+podemos encontrar una demostración de para cualquier $x \in X$ se tiene
+que $p(x) = \mathsf{false}$.
+#+end_definition
+
+En matemática clásica todo conjunto es omnisciente en virtud del
+tercio excluso, así que lo que nos interesa es estudiarlo bajo una
+interpretación constructivista.  El propósito de esta sección es
+entonces el de buscar espacios cumpliendo la siguiente
+sentencia.
+\[
+\forall p \in 2^X \colon \Big( \exists x \in X\colon p(x) = \mathsf{true}\Big) \vee 
+\Big( \forall x \in X \colon p(x) = \mathsf{false}\Big)
+\]
+Esto lo haremos construyendo una *función de búsqueda* $\varepsilon \colon (X \to 2) \to X$ tal que
+$p(\varepsilon(p)) = 1$ determinará que hemos encontrado un ejemplo
+y tal que $p(\varepsilon(p)) = 0$ implica que no hay ningún ejemplo.
+
+#+begin_proposition
+El espacio de los números naturales $\mathbb{N}$ no es omnisciente.
+#+end_proposition
+#+begin_proof
+Si fuera omnisciente podríamos resolver el problema de la parada.
+Dada una máquina de Turing $M$ construiríamos $p(n)$ como el programa
+que simula $n$ pasos de computación de $M$ y devuelve un booleano que
+indica si /no/ ha terminado.
+#+end_proof
+
+Podría parecer por esta proposición que ningún espacio infinito va a
+ser omnisciente: al fin y al cabo, esperamos que cualquier espacio
+infinito 'como conjunto' sea más grande que los números naturales. Lo
+interesante es notar que, en matemática constructiva, los conjuntos
+tienen una estructura que no queda capturada por su cardinalidad.
+Encontraremos incluso conjuntos omniscientes no numerables.
+
+** El espacio de Cantor
+#+begin_definition
+El *espacio de Cantor* es $2^{\mathbb{N}}$, estando formado por las secuencias
+binarias.
+#+end_definition
+
+Nótese que el espacio de Cantor es trivialmente un conjunto no
+numerable. Esto puede causar confusión cuando lo vemos desde fuera
+del sistema: si el espacio de Cantor está dado sólo por programas
+que toman un natural y devuelven un booleano ¿cómo puede no ser
+numerable si estos programas lo son? Pero esto es simplemente una
+observación que hacemos desde fuera del sistema formal en el que
+estamos trabajando. El hecho es que no podemos encontrar funciones
+del sistema formal $\mathbb{N} \to 2^{\mathbb{N}}$ que sean sobreyectivas, el argumento
+clásico de diagonalización de Cantor sirve en este caso.
+
+Si realizamos el hecho de que es omnisciente, además de poder
+encontrar ejemplos de propiedades en general, ganaríamos la posibilidad
+de decidir igualdades de funciones en un conjunto infinito.
+Supongamos que tenemos un conjunto $B$ con *igualdad decidible*, es
+decir,
+\[
+\forall x, y\in B \colon (x = y) \vee \neg (x = y),
+\]
+entonces tendremos igualdad decidible también en $2^{\mathbb{N}} \to B$, y un
+programa será capaz de determinar si para cualesquiera dos funciones
+$f,g \colon 2^{\mathbb{N}}\to B$ se tiene $(f = g) \vee \neg (f = g)$. Planteamos ejemplos de
+los dos fenómenos en el siguiente código.
+
+#+BEGIN_SRC haskell
+n b = if b then 1 else 0 -- Auxiliar Bool -> Integer
+-- Ejemplos:
+forsome (\f -> n(f 1) + n(f 2) + n(f 3) == 4)
+-- False
+w1 = (\f -> f ( n(f 2) * n(f 4) + n(f 3) * n(f 4)))
+w2 = (\g -> g ((n(g 3) + n(g 2)) * n(g 4)))
+w1 == w2
+-- True
+v1 = ( \g -> let ng = n . g in ng(2*ng 0 + 3*ng 2 + 2*ng 1) )
+v2 = ( \g -> let ng = n . g in ng(2*ng 0 + 3*ng 2 + 2*ng 2) )
+v1 == v2
+-- False
+#+END_SRC
+
+Demostraremos que es omnisciente construyendo un programa que 
+realice la función de búsqueda $\varepsilon \colon (2^{\mathbb{N}}\to 2) \to 2^{\mathbb{N}}$. Usaremos en este
+caso Haskell. Lo interesante en este código será demostrar que siempre
+debe terminar; entender el papel que juega la evaluación perezosa del
+lenguaje es crucial, así como el hecho de que cada proposición
+sobre el espacio debe poder calcularse en tiempo finito y por tanto sólo puede consumir
+una cantidad finita de información de cada secuencia.
+
+#+BEGIN_SRC haskell
+{-# LANGUAGE FlexibleInstances #-}
+
+-- Empezamos definiendo el espacio de Cantor. Incluimos una función
+-- auxiliar que añade un elemento al inicio de la secuencia.
+type Cantor = Integer -> Bool
+
+(#) :: Bool -> Cantor -> Cantor
+(b # f) 0 = b
+(b # f) n = f (n-1)
+
+-- Usaremos una definición de epsilon que compondrá una inducción 
+-- mutua con otra función que comprueban si existen ejemplos
+-- en cada rama del árbol binario.
+
+-- Esta definición de epsilon es debida a Ulrich Berger.
+epsilon :: (Cantor -> Bool) -> Cantor
+epsilon p =
+  if forsome (\a -> p (False # a))
+    then False # epsilon (\a -> p (False # a))
+    else True  # epsilon (\a -> p (True  # a))
+
+forsome :: (Cantor -> Bool) -> Bool
+forsome p = p (epsilon p)
+
+forevery :: (Cantor -> Bool) -> Bool
+forevery p = not (forsome (not . p))
+
+-- Igualdad para funciones.
+instance (Eq b) => Eq (Cantor -> b) where
+  f == g = forevery (\u -> f u == g u)
+#+END_SRC
+
+Esta implementación presenta un problema: es extremadamente lenta.
+En el fichero ~Omnsiciente.hs~ se presenta otra versión de la función
+epsilon debida a Martín Escardó que es más rápida por un factor
+exponencial.
+
+** Los números conaturales
+Los números naturales pueden caracterizarse en la categoría $\mathsf{Set}$
+por su principio de inducción. La inducción nos permite, dado
+un conjunto $A$ con un elemento y una función $f \colon A \to A$, 
+definir una función de los naturales al conjunto, $\mathsf{rec} \colon \mathbb{N} \to A$,
+que cumpla $\mathsf{rec}(0) = a$ y $\mathsf{rec}(n+1) = f(\mathsf{rec}(n))$. 
+
+Esta misma condición se expresa categóricamente diciendo que
+los naturales son un álgebra inicial del funtor $(+1)$. Es decir, 
+existe una única $r$ haciendo conmutar al siguiente diagrama.
+\[\begin{tikzcd}
+1 + \mathbb{N} \rar[dashed]{1+\mathsf{rec}}\dar[swap]{\mathrm{zero} + \mathrm{succ}}& 1 + A \dar{a + f} \\
+\mathbb{N} \rar[dashed]{\mathsf{rec}} & A 
+\end{tikzcd}\]
+Esta caracterización puede dualizarse para obtener los
+*números conaturales* $\conat{}$ como la coálgebra final del funtor $(+1)$.
+\[\begin{tikzcd}
+1 + A \rar[dashed]{1+\mathsf{corec}}& 1 + \conat \\
+A\uar{f} \rar[dashed]{\mathsf{corec}} & \conat \uar[swap]{\mathrm{pred}} 
+\end{tikzcd}\]
+Esta construcción tiene la ventaja de que la hemos hecho
+en categorías y puede ser replicada en cualquier lenguaje que soporte
+estructuras coinductivas. Una construcción más intuitiva es tomar
+$\conat{}$ como la compatificación de Alexandrov de $\mathbb{N}$: consideramos todos
+los naturales pero además un punto $\infty \in \conat$, que puede verse como
+un número natural cuyo predecesor es él mismo. Esto es distinto de
+$\mathbb{N} \cup \left\{ \infty \right\}$, que tendría en principio topología discreta.
+
+Todavía podemos tomar otra construcción más fácil de implementar en la
+mayoría de lenguajes de programación. Podemos tomar $\conat{}$ como el espacio
+de sucesiones binarias decrecientes.
+\[
+\conat{} = \left\{ x \in 2^{\mathbb{N}} \mid \forall i \in \mathbb{N}.\ x_i \geq x_{i+1} \right\}
+\]
+Aquí representamos los naturales como $i(n) = 1^n0^{\omega}$ y el punto
+de compactificación como $\infty = 1^{\omega}$. Estas son además las únicas
+sucesiones posibles.
+
+#+begin_proposition
+El espacio de los números conaturales es omnisciente.
+#+end_proposition
+#+begin_proof
+Usando la última representación que hemos descrito, podemos definir una
+función que encontrará un ejemplo si existe como sigue.
+\[
+\varepsilon(p)(n) = \left\{\begin{array}{ll}
+0 & \mbox{si } \exists k \leq n \in \mathbb{N}\colon p(i(k)) = \mathsf{false}  \\
+1 & \mbox{si } \forall k \leq n \in \mathbb{N}\colon p(i(k)) = \mathsf{true}
+\end{array}\right.
+\]
+Nótese que está bien definida y termina para cualquier entrada.
+
+Ahora podemos comprobar por casos. Si $\varepsilon(p) = i(n)$ para algún $n \in \mathbb{N}$,
+será porque $p(i(n)) = 0$ por definición y habremos terminado. Si
+$\varepsilon(p) = \infty$, tendremos forzosamente que $p(i(n))=1$ para todo $n \in \mathbb{N}$;
+así si existe algún ejemplo será precisamente $\infty$.
+#+end_proof
+
+Para la implementación en Haskell de este espacio vamos a usar una
+técnica distinta. Si intentamos definir los números naturales, la
+evaluación perezosa nos dará directamente los números conaturales:
+existirá el punto fijo de la función sucesor.
+
+#+BEGIN_SRC haskell
+{-# LANGUAGE FlexibleInstances #-}
+
+-- CONATURAL.
+-- Una representación de los números conaturales.
+data Conat = Zero | Succ Conat deriving (Eq, Show)
+
+infinity :: Conat
+infinity = Succ infinity
+
+-- Hacerlos instancia de Num nos permitirá usar los enteros con
+-- notación usual.
+instance Num Conat where
+  Zero + y = y
+  Succ x + y = Succ (x + y)
+  Zero * y = Zero
+  Succ x * y = y + (x * y)
+  fromInteger 0 = Zero
+  fromInteger n = Succ (fromInteger (n-1))
+
+
+-- Búsqueda usando las mismas funciones auxiliares que en el
+-- caso de los números conaturales.
+epsilon :: (Conat -> Bool) -> Conat
+epsilon p = if p Zero
+  then Zero
+  else Succ $ epsilon (p . Succ)
+
+forsome :: (Conat -> Bool) -> Bool
+forsome p = p (epsilon p)
+
+forevery :: (Conat -> Bool) -> Bool
+forevery p = not (forsome (not . p))
+
+-- Igualdad para funciones.
+instance (Eq b) => Eq (Conat -> b) where
+  f == g = forevery (\u -> f u == g u)
+#+END_SRC
+
+** Topología y computación
+La diferencia entre $\mathbb{N}$, que no es omnisciente, y los
+espacios $\mathbb{N}_{\infty}$ y $2^{\mathbb{N}}$ reside en que estos
+últimos son compactos. ¿Cómo hemos acabado trabajando con topología?
+Podemos trazar una identificación entre computabilidad y continuidad,
+y cada conjunto en matemática constructiva tiene una estructura más
+allá de su cardinalidad que puede ser entendida como una estructura de
+espacio.
+
+Informalmente, se pueden hacer las siguientes identificaciones.
+
+|-------------------------+-------------------|
+| Computación             | Topología         |
+|-------------------------+-------------------|
+| Tipo de datos           | Espacio           |
+| Elemento del tipo       | Punto del espacio |
+| Propiedad semidecidible | Conjunto abierto  |
+| Función computable      | Función continua  |
+| forevery es computable  | Compacto          |
+| forsome es computable   | Disperso          |
+|-------------------------+-------------------|
+
+Un tratamiento formal de este tema puede encontrarse en cite:escardo2004synthetic.
+
+Por ejemplo, $\conat{}$ tiene la topología de la secuencia convergente
+genérica. El conjunto $\left\{ \infty \right\}$ sería cerrado, pero no
+abierto; si traducimos esto, tenemos que es semidecidible ver si un
+conatural es finito (simplemente ir tomando su predecesor hasta llegar
+a $0$) pero no decidible (el infinito no puede distinguirse de un
+número suficientemente grande).
+
+** Lema de Konig
+El espacio de Cantor es compacto; esto es lo que le hace ser
+omnisciente. Pero no es computablemente compacto, en el sentido de que
+existe una secuencia computable de abiertos que lo cubren pero que no
+tiene ningún subrecubrimiento finito.
+
+* Teoría de tipos
+Usaremos el lenguaje de programación Agda para probar teoremas en
+matemática constructiva y extraer realizadores de ellos.
+
+** Tipos básicos para la teoría de Martin-Löf
+La proposición verdadera $\top$ la realiza el único elemento de su
+tipo. La proposición falsa no la realiza ningún elemento. Para
+realizar una conjunción necesitamos realizar sus dos factores,
+mientras que para realizar una disyunción necesitamos elegir
+uno de los dos y realizarlo.
+
+#+latex: \noindent\rule[0.5ex]{\linewidth}{0.1pt}\small
+#+latex: \ExecuteMetaData[latex/Snippets.tex]{unit}
+#+latex: \normalsize\noindent\rule[0.5ex]{\linewidth}{0.1pt}
+
+Con estos primeros tipos de datos ya somos capaces de probar
+la conmutatividad de la conjunción. Agda es capaz de extraer
+un programa de la demostración.
+
+#+latex: \noindent\rule[0.5ex]{\linewidth}{0.1pt}\small
+#+latex: \ExecuteMetaData[latex/Snippets.tex]{conjunction}
+#+latex: \normalsize\noindent\rule[0.5ex]{\linewidth}{0.1pt}
+
+Para completar estos tipos, notamos que los cuantificadores
+universales están directamente implementados en Agda, así como
+un tipo  ~Set~ que sirve como universo de tipos. La función ~swap~
+es un ejemplo de ambos fenómenos usamos ~(A B : Set)~ para cuantificar
+universalmente sobre cualesquiera dos tipos del lenguaje. Construimos
+ahora el cuantificador existencial ~Σ~.
+
+#+latex: \noindent\rule[0.5ex]{\linewidth}{0.1pt}\small
+#+latex: \ExecuteMetaData[latex/Snippets.tex]{naturalsexistential}
+#+latex: \normalsize\noindent\rule[0.5ex]{\linewidth}{0.1pt}
+
+** La igualdad
+Lo único que nos falta para poder hacer matemáticas es el concepto
+de igualdad, y poder construir programas que realicen una igualdad.
+Nuestra igualdad vendrá definida por el *eliminador J*, que de forma
+simplificada es la regla que dice que: dada una proposición dependiendo
+en dos argumentos del mismo tipo $C(-,-)$, si podemos probar $C(x,x)$
+para cada $x$, entonces tenemos $C(a,b)$ para cada dos elementos iguales $a = b$.
+
+Lo interesante de esta regla, junto a la reflexividad, es que captura
+la mayoría de propiedades de la igualdad. Implica la transitividad,
+la simetría y el hecho de que toda función respeta la igualdad.
+
+#+latex: \noindent\rule[0.5ex]{\linewidth}{0.1pt}\small
+#+latex: \ExecuteMetaData[latex/Snippets.tex]{equality}
+#+latex: \normalsize\noindent\rule[0.5ex]{\linewidth}{0.1pt}
+
+Podríamos pensar que la única instancia de la igualdad es realmente
+la reflexividad. Es decir, que $\forall p \in (a = a)\colon p = \mathsf{refl}$; y podríamos
+pensar que es otra consecuencia del eliminador J, pero no es así.
+De hecho existe un modelo de la teoría de Martin-Löf en grupoides
+que demuestra que es independiente de la teoría. Si interpretamos
+los grupoides como espacios, lo que estaríamos intentando demostrar
+es que todo espacio (dado por un tipo) es simplemente conexo; y
+el modelo demuestra que no tiene por qué ser el caso. Si asuimos
+que la única instancia de la igualdad es la reflexividad trabajaremos
+sólo con tipos que representen espacios conexos.
+
+** Teoremas en Agda
+Como ejemplo, probamos la commutatividad de la suma de números
+naturales.
+
+#+latex: \noindent\rule[0.5ex]{\linewidth}{0.1pt}\small
+#+latex: \ExecuteMetaData[latex/Snippets.tex]{suma}
+#+latex: \normalsize\noindent\rule[0.5ex]{\linewidth}{0.1pt}
+
+
+* Referencias                                                                               :ignore:
+bibliographystyle:alpha
+bibliography:bibliography.bib
