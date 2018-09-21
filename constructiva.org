@@ -772,7 +772,6 @@ naturales.
 #+latex: \ExecuteMetaData[latex/Snippets.tex]{suma}
 #+latex: \normalsize\noindent\rule[0.5ex]{\linewidth}{0.1pt}
 
-
 * Referencias                                                                               :ignore:
 bibliographystyle:alpha
 bibliography:bibliography.bib

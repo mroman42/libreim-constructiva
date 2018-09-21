@@ -124,11 +124,13 @@ Supongamos que siempre hubiéramos trabajado con el axioma:
 
  * Pero tenemos más ejemplos, algunos extraños.
 
- * Retirarlo no es negarlo. 
+ * Retirarlo no es lo mismo que asumir su contrario.
 
 ** Definiciones
 
- * $\bot$ es una proposición falsa, implica cualquier cosa $\forall A \colon \bot \impl A$.
+ * $\top$ es la proposición verdadera.
+
+ * $\bot$ es la proposición falsa, implica cualquier cosa $\forall A \colon \bot \impl A$.
 
  * $\neg A$ se define como $A \impl \bot$.
 
@@ -144,25 +146,25 @@ con la *regla de la doble negación* $A = \neg\neg A$, porque son equivalentes.
    el tercio excluso
 
 ** No podemos hacer demostraciones por reducción al absurdo
-
 Hay dos cosas distintas que llamamos demostración por *reducción al absurdo*.
 
- 1. /Supongamos $\neg P$, ..., llegamos a contradicción $\bot$, luego $P$;/
- 2. /Supongamos $P$, ..., llegamos a contradicción $\bot$, luego $\neg P$./
+ 1. /Supongamos $\neg A$, ..., llegamos a contradicción $\bot$, luego $A$;/
+ 2. /Supongamos $A$, ..., llegamos a contradicción $\bot$, luego $\neg A$./
 
 La primera equivale al tercio excluso. La segunda es la
-definición de negación. Sólo son iguales si asumes el
+definición de negación. Sólo son iguales si asumimos el
 tercio excluso.  Muchas demostraciones por 'contradicción' no lo son.
 
  * La raíz de 2 es irracional.
  * Teorema de Cantor.
  * Teorema de Russell.
 
-   
 * Interpretación BHK
 ** Una intuición
 Diremos que $p \Vdash \varphi$ si $p$ es un programa que *realiza* a $\varphi$.
 
+ * $p \Vdash \top$ en todos los casos;
+ * $p \Vdash \bot$ en ningún caso;
  * $\pair{p,q}\Vdash \phi \wedge \psi$, cuando $p \Vdash \phi$ y $q \Vdash \psi$;
  * $\pair{p,q} \Vdash \phi \vee \psi$, cuando $p$ representa un bit que nos dice si vamos a
    demostrar $\phi$ o si vamos a demostrar $\psi$ y $q$ realiza al elegido;
@@ -170,9 +172,7 @@ Diremos que $p \Vdash \varphi$ si $p$ es un programa que *realiza* a $\varphi$.
    $s \Vdash \phi$ y devuelve un $p(s) \Vdash \psi$;
  * $p \Vdash \forall x \in A, \phi(x)$, cuando $p$ es un programa que toma como entrada
    $s \Vdash a \in A$ y devuelve $p(s)\Vdash \phi(a)$;
- * $\pair{p,q} \Vdash \exists x \in A, \phi(x)$, cuando $p \Vdash a \in A$ y $q \Vdash \phi(a)$;
- * $p \Vdash \bot$ en ningún caso;
- * $p \Vdash \top$ en todos los casos.
+ * $\pair{p,q} \Vdash \exists x \in A, \phi(x)$, cuando $p \Vdash a \in A$ y $q \Vdash \phi(a)$.
 
 Las proposiciones válidas en lógica intuicionista deberían ser
 realizables.
@@ -192,15 +192,15 @@ realizables.
    \]
 
 #+BEGIN_SRC python :results output
-def recursion (zero, succ, n):
+def inductionNats (zero, succ, n):
   if n == 0: return zero
   return succ(recursion(zero,succ,n-1))
 #+END_SRC
 
 #+BEGIN_SRC haskell
-recursion :: a -> (a -> a) -> Integer -> a
-recursion z s 0 = z
-recursion z s n = s (recursion z s (n-1))
+inductionNats :: a -> (a -> a) -> Integer -> a
+inductionNats z s 0 = z
+inductionNats z s n = s (recursion z s (n-1))
 #+END_SRC
 
 * Matemática constructivista
@@ -223,6 +223,8 @@ recursion z s n = s (recursion z s (n-1))
  * '*Toda función es computable*' es un axioma válido.
 
 ** Muy extrañas, de hecho
+
+*No es cierto que el subconjunto de un conjunto finito deba ser finito.*
 
 Dada una proposición no decidible $P$, el conjunto $A = \{0 \mid P\mbox{ es cierto}\}$
 no puede probarse finito, pero puede probarse que no es infinito.
@@ -249,10 +251,10 @@ Vamos a formalizar esto.
 
 ** Microafinidad
 
- * *Infinitesimales* $D = \{d \in R \mid d^2 = 0\}$.
- * *Axioma*. Toda función $g \colon D \to R$ es lineal de forma única. 
- * En particular cada $f \colon R \to R$ tiene una única '/derivada/'
-   en cada punto $x \in R$.
+ * *Infinitesimales* $D = \{d \in \mathbb{R} \mid d^2 = 0\}$.
+ * *Axioma*. Toda función $g \colon D \to \mathbb{R}$ es lineal de forma única. 
+ * En particular cada $f \colon \mathbb{R} \to \mathbb{R}$ tiene una única '/derivada/'
+   en cada punto $x \in \mathbb{R}$.
    \[g(d) = f(x + d) = f(x) + f'(x) d\]
  * *¿Pero no es verdad que $D = \left\{ 0 \right\}$?* No, si debilitamos la lógica
 
@@ -265,6 +267,26 @@ Vamos a formalizar esto.
 *Teorema de cancelación.* Si tenemos $ad = bd$ para todo $d \in D$, entonces $a = b$.
 
 Podemos dividir por un infinitesimal sólo si está cuantificado universalmente.
+
+** Derivación, series de Taylor
+Si llamamos $f(x) = x^2$, tenemos
+\[
+f'(x)d = f(x+d) - f(x) = x^2 + 2xd - x^2 = 2xd.
+\]
+
+Y ¿cómo funciona en general?
+
+ * Podríamos intentar segundas derivadas.
+
+ * $f(x + d_1 + d_2) = f(x) + (d_1 + d_2)f'(x) + \frac{(d_1 + d_2)^2}{2} f''(x)$
+
+ * $d_1+d_2$ nos da un nilpotente de grado 3.
+
+*Axioma (versión general)*. Para nilpotentes de grado $n$, toda
+función es de forma única una serie.
+\[
+g(d) = a_0 + a_1d + a_2d^2 + \dots + a_{n-1}d^{n-1}
+\]
 
 * Omnisciencia
 ** ¿Qué buscamos?
@@ -414,7 +436,6 @@ forsome (\n -> 2 * n ^ 3 == 245 + n)      -- true
 forsome (\n -> n * n == 28)               -- false
 epsilon (\n -> n * n + 4 * n == 32)       -- 4
 #+END_SRC
-
 
 * Agda
 
