@@ -677,16 +677,16 @@ espacio.
 
 Informalmente, se pueden hacer las siguientes identificaciones.
 
-|-------------------------+-------------------|
-| Computación             | Topología         |
-|-------------------------+-------------------|
-| Tipo de datos           | Espacio           |
-| Elemento del tipo       | Punto del espacio |
-| Propiedad semidecidible | Conjunto abierto  |
-| Función computable      | Función continua  |
-| forevery es computable  | Compacto          |
-| forsome es computable   | Disperso          |
-|-------------------------+-------------------|
+|---------------------------+-------------------|
+| Computación               | Topología         |
+|---------------------------+-------------------|
+| Tipo de datos             | Espacio           |
+| Elemento del tipo         | Punto del espacio |
+| Propiedad semidecidible   | Conjunto abierto  |
+| Función computable        | Función continua  |
+| forevery es semidecidible | Compacto          |
+| forsome es semidecidible  | Disperso          |
+|---------------------------+-------------------|
 
 Un tratamiento formal de este tema puede encontrarse en cite:escardo2004synthetic.
 

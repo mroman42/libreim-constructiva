@@ -136,6 +136,8 @@ Supongamos que siempre hubiéramos trabajado con el axioma:
 
  * El *tercio excluso* es el axioma $\forall A\colon A \vee \neg A$.
 
+ * Esto no da una lógica de más valores de verdad, de hecho, $\neg \neg A \wedge \neg A \impl \bot$.
+
 ** La doble negación equivale al tercio excluso
 Si queremos ser agnósticos con el tercio excluso tenemos que serlo
 con la *regla de la doble negación* $A = \neg\neg A$, porque son equivalentes.
@@ -180,7 +182,7 @@ realizables.
 ** Interpretando
 
  * No existe un programa $p \Vdash \forall \varphi\colon \varphi \vee \neg \varphi$.
-   Resolvería el problema de la parada. \pause
+   Resolvería el problema de decisión. \pause
 
  * No existe un programa $p \Vdash \forall x \in \mathbb{R} \colon (x = 0) \vee (x \neq 0)$.
    Necesitaría inspeccionar infinitos bits. \pause
@@ -192,15 +194,15 @@ realizables.
    \]
 
 #+BEGIN_SRC python :results output
-def inductionNats (zero, succ, n):
+def natInd (zero, succ, n):
   if n == 0: return zero
-  return succ(recursion(zero,succ,n-1))
+  return succ(natInd(zero,succ,n-1))
 #+END_SRC
 
 #+BEGIN_SRC haskell
-inductionNats :: a -> (a -> a) -> Integer -> a
-inductionNats z s 0 = z
-inductionNats z s n = s (recursion z s (n-1))
+natInd :: a -> (a -> a) -> Integer -> a
+natInd z s 0 = z
+natInd z s n = s (natInd z s (n-1))
 #+END_SRC
 
 * Matemática constructivista
@@ -218,7 +220,7 @@ inductionNats z s n = s (recursion z s (n-1))
  * El *teorema de Tychonoff* o el *lema de Zorn* son equivalentes al
    axioma de elección, no podemos esperar probarlos en este contexto.
  * Existe una función $f \colon [0,1] \to \mathbb{R}$ *no acotada*.
- * Es un problema abierto determinar si existe una inyección $\mathbb{R} \to \mathbb{N}$.
+ * Es un problema abierto determinar si existe una biyección $\mathbb{R} \to \mathbb{N}$.
  * '*Toda función es continua*' es un axioma válido.
  * '*Toda función es computable*' es un axioma válido.
 
@@ -374,16 +376,16 @@ v1 == v2
 *Teoría*. La diferencia entre $\mathbb{N}$, que no es omnisciente, y $2^{\mathbb{N}}$ 
 que sí, es la compacidad.
 
-|-------------------------+-------------------|
-| Computación             | Topología         |
-|-------------------------+-------------------|
-| Tipo de datos           | Espacio           |
-| Elemento del tipo       | Punto del espacio |
-| Propiedad semidecidible | Conjunto abierto  |
-| Función computable      | Función continua  |
-| forevery es computable  | Compacto          |
-| forsome es computable   | Disperso          |
-|-------------------------+-------------------|
+|---------------------------+-------------------|
+| Computación               | Topología         |
+|---------------------------+-------------------|
+| Tipo de datos             | Espacio           |
+| Elemento del tipo         | Punto del espacio |
+| Propiedad semidecidible   | Conjunto abierto  |
+| Función computable        | Función continua  |
+| forevery es semidecidible | Compacto          |
+| forsome es semidecidible  | Overt             |
+|---------------------------+-------------------|
 
 ** Conaturales
 Vamos a compactificar los naturales con la *compactificación de Alexandrov*.
@@ -395,7 +397,7 @@ Les añadimos un punto $\infty \in \conat$. El espacio $\conat$ se llama de núm
  * Es semidecidible ver si un conatural es finito, pero no es decidible.
 
 Desde fuera parecen biyectivos, no lo son. Las funciones que nos
-interesan son las computables/continuas. *Lección:* un conjunto en
+interesan son las computables/continuas. *Moraleja:* un conjunto en
 matemática constructivista es más que su cardinalidad, tiene una
 estructura topológica/computable.
 
