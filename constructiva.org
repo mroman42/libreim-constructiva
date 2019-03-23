@@ -345,7 +345,7 @@ Y no es lo único que no se comporta como esperamos.
    aproximándolo, pero necesitamos hipótesis adicionales.
  * El *teorema de Tychonoff* o el *lema de Zorn* son equivalentes al
    axioma de elección, no podemos esperar probarlos en este contexto.
- * Existe una función $f \colon [0,1] \to \mathbb{R}$ *no acotada*.
+ * Existe una función $f \colon [0,1] \to \mathbb{R}$ continua *no acotada*.
  * Es un problema abierto determinar si existe una inyección $\mathbb{R} \to \mathbb{N}$.
 
 * Geometría diferencial sintética
